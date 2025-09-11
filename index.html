@@ -1,155 +1,243 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
-<html lang="ta">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TDEE Calorie Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil&display=swap" rel="stylesheet">
+  <title>Smile Graphics | Creative Portfolio</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: 'Noto Sans Tamil', sans-serif;
-      background-color: #ffffff;
-      margin: 0;
-      padding: 20px;
-      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fffef9;
+      color: #222;
+      line-height: 1.6;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: #f9f9f9;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    h2 {
+
+    header {
+      background: #ffe600;
+      padding: 30px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
       text-align: center;
-      color: #2e86de;
     }
-    label {
-      font-weight: bold;
+
+    .brand {
+      font-size: 2.8em;
+      font-weight: 900;
+      color: #111;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .tagline-box {
+      padding: 100px 20px 80px;
+      background: radial-gradient(circle at center, #fffde6, #ffffff);
+      text-align: center;
+    }
+
+    .tagline-title {
+      font-size: 2.5em;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+      position: relative;
+    }
+
+    .tagline-title::after {
+      content: '';
       display: block;
-      margin-top: 15px;
+      width: 60px;
+      height: 4px;
+      background: #000;
+      margin: 20px auto 0;
+      border-radius: 3px;
     }
-    input, select {
+
+    .tagline-para {
+      font-size: 1.25em;
+      color: #555;
+      max-width: 750px;
+      margin: 0 auto;
+      line-height: 1.9;
+      padding: 15px 20px;
+    }
+
+    .tagline-para strong {
+      color: #000;
+      font-weight: 700;
+    }
+
+    section {
+      padding: 50px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .item img {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      height: auto;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
     }
-    button {
-      background-color: #2e86de;
-      color: white;
-      padding: 12px;
-      width: 100%;
-      margin-top: 20px;
-      border: none;
+
+    .item img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    }
+
+    .order-now {
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    .order-now a {
+      font-size: 18px;
+      background: #007bff;
+      color: #fff;
+      padding: 15px 30px;
       border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background 0.3s ease;
     }
-    .result-box {
-      margin-top: 25px;
-      background-color: #eaf2f8;
-      padding: 20px;
-      border-radius: 10px;
-      line-height: 1.8;
+
+    .order-now a:hover {
+      background: #0056b3;
     }
-    .note {
-      margin-top: 30px;
-      background: #fff5e6;
-      border-left: 6px solid #ffa502;
-      padding: 20px;
-      border-radius: 10px;
+
+    footer {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 30px 15px;
+      font-size: 1em;
+      margin-top: 60px;
+      position: relative;
     }
-    .note h4 {
-      margin: 0;
-      color: #d35400;
+
+    .whatsapp-float {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background-color: #25d366;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      text-decoration: none;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .whatsapp-float img {
+      width: 30px;
+      height: 30px;
+    }
+
+    @media (max-width: 600px) {
+      .brand {
+        font-size: 2em;
+      }
+
+      .tagline-title {
+        font-size: 1.8em;
+      }
+
+      .tagline-para {
+        font-size: 1em;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .whatsapp-float {
+        width: 55px;
+        height: 55px;
+        bottom: 80px;
+      }
+
+      .whatsapp-float img {
+        width: 26px;
+        height: 26px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>🔥 TDEE / Calorie Calculator</h2>
-    <label>பாலினம் (Gender)</label>
-    <select id="gender">
-      <option value="male">ஆண் (Male)</option>
-      <option value="female">பெண் (Female)</option>
-    </select>
 
-    <label>எடை (Weight in kg)</label>
-    <input type="number" id="weight" placeholder="உங்கள் எடை kg-ல்">
+  <!-- Header -->
+  <header>
+    <div class="brand">Smile Graphics</div>
+  </header>
 
-    <label>உயரம் (Height in cm)</label>
-    <input type="number" id="height" placeholder="உங்கள் உயரம் cm-ல்">
-
-    <label>வயது (Age)</label>
-    <input type="number" id="age" placeholder="உங்கள் வயது">
-
-    <label>நடமாட்ட நிலை (Activity Level)</label>
-    <select id="activity">
-      <option value="1.2">Sedentary – very little activity</option>
-      <option value="1.375">Light – light exercise 1-3 days/week</option>
-      <option value="1.55">Moderate – moderate exercise 3–5 days/week</option>
-      <option value="1.725">Active – hard exercise 6–7 days/week</option>
-      <option value="1.9">Very Active – daily intense training</option>
-    </select>
-
-    <button onclick="calculateTDEE()">கணக்கிடு</button>
-
-    <div class="result-box" id="result"></div>
-
-    <div class="note">
-      <h4>📘 கூடுதல் அறிவு:</h4>
-      <ul>
-        <li><b>BMR</b> என்பது உங்கள் உடல் ஓய்வில் இருக்கும்போது செலவழிக்கும் கலோரி அளவு.</li>
-        <li><b>TDEE</b> என்பது உங்கள் உடல் நாளடைவில் உண்மையில் தேவையான கலோரிகள்.</li>
-        <li><b>Maintain:</b> உடல் எடையை அதேபடி வைத்திருக்க.</li>
-        <li><b>Lose:</b> 500 கலோரி குறைவாக எடுத்தால் வாரத்திற்கு ~0.5kg குறையும்.</li>
-        <li><b>Gain:</b> 500 கலோரி அதிகமாக எடுத்தால் வாரத்திற்கு ~0.5kg அதிகரிக்கும்.</li>
-      </ul>
-    </div>
+  <!-- Tagline -->
+  <div class="tagline-box">
+    <h1 class="tagline-title">Designs That Speak Louder Than Words</h1>
+    <p class="tagline-para">
+      We don’t just design logos—we craft visual stories that speak to your audience and define your identity.
+      <br><br>
+      <strong>Let your brand shine</strong> with our creative power.
+    </p>
   </div>
 
-  <script>
-    function calculateTDEE() {
-      const gender = document.getElementById("gender").value;
-      const weight = parseFloat(document.getElementById("weight").value);
-      const height = parseFloat(document.getElementById("height").value);
-      const age = parseInt(document.getElementById("age").value);
-      const activity = parseFloat(document.getElementById("activity").value);
+  <!-- Portfolio -->
+  <section>
+    <div class="gallery">
+      <div class="item"><img src="a.jpg" alt="Logo Design 1" /></div>
+      <div class="item"><img src="b.jpg" alt="Logo Design 2" /></div>
+      <div class="item"><img src="c.jpg" alt="Logo Design 3" /></div>
+      <div class="item"><img src="d.jpg" alt="Logo Design 4" /></div>
+      <div class="item"><img src="e.jpg" alt="Instagram Post" /></div>
+      <div class="item"><img src="f.jpg" alt="Business Card" /></div>
+      <div class="item"><img src="g.jpg" alt="Flyer Design" /></div>
+      <div class="item"><img src="h.jpg" alt="Poster Mockup" /></div>
+    </div>
+  </section>
 
-      if (isNaN(weight) || isNaN(height) || isNaN(age)) {
-        alert("தயவு செய்து எல்லா புலங்களையும் சரியாக நிரப்பவும்.");
-        return;
-      }
+  <!-- Order Now Button -->
+  <div class="order-now">
+    <a href="https://wa.me/919344165879?text=Hello!%20I%20saw%20your%20logo%20designs%20and%20I%20really%20liked%20them.%20I%20would%20like%20to%20order%20a%20logo." target="_blank">
+      Order Now
+    </a>
+  </div>
 
-      let bmr;
-      if (gender === "male") {
-        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-      } else {
-        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
-      }
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Smile Graphics | Call: 9344165879</p>
+  </footer>
 
-      const tdee = bmr * activity;
-      const maintain = tdee.toFixed(0);
-      const lose = (tdee - 500).toFixed(0);
-      const gain = (tdee + 500).toFixed(0);
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/919344165879?text=Hello!%20I%20saw%20your%20logo%20designs%20and%20I%20really%20liked%20them.%20I%20would%20like%20to%20order%20a%20logo." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp.png" alt="WhatsApp" />
+  </a>
 
-      document.getElementById("result").innerHTML = `
-        ✅ <b>Result:</b><br>
-        🔸 <b>BMR:</b> ${bmr.toFixed(0)} kcal/day<br>
-        🔸 <b>TDEE:</b> ${tdee.toFixed(0)} kcal/day<br><br>
-        📌 <b>எடையை:</b><br>
-        ▪️ Maintain: <b>${maintain} kcal/day</b><br>
-        ▪️ குறைக்க: <b>${lose} kcal/day</b><br>
-        ▪️ அதிகரிக்க: <b>${gain} kcal/day</b>
-      `;
-    }
-  </script>
 </body>
 </html>
-
 
 </html>
