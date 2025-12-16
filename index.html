@@ -2,70 +2,180 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rock RO System</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; background:#f5f7fa; color:#222; }
-    header { background:#0b5ed7; color:#fff; padding:20px; text-align:center; }
-    section { padding:20px; max-width:900px; margin:auto; }
-    .card { background:#fff; padding:16px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,.08); margin-bottom:16px; }
-    h2 { color:#0b5ed7; }
-    footer { background:#222; color:#fff; text-align:center; padding:12px; }
-    .btn { display:inline-block; padding:10px 16px; background:#0b5ed7; color:#fff; border-radius:8px; text-decoration:none; }
-    .gallery { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; }
-    .gallery img { width:100%; border-radius:10px; box-shadow:0 3px 8px rgba(0,0,0,.15); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website → PWA Converter</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background:#f4f6f9;
+  padding:20px;
+}
+h1 {
+  color:#1a73e8;
+}
+textarea {
+  width:100%;
+  height:250px;
+  padding:10px;
+  font-family: monospace;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+input {
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+button {
+  background:#1a73e8;
+  color:white;
+  border:none;
+  padding:12px 20px;
+  font-size:16px;
+  border-radius:10px;
+  cursor:pointer;
+}
+button:hover {
+  background:#0f5edc;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🌐 Website → PWA App Converter</h1>
+
+<p>👇 உங்கள் Website HTML code இங்கே paste பண்ணுங்க</p>
+
+<textarea id="htmlCode" placeholder="Paste your WEBSITE HTML code here..."></textarea>
+
+<input id="appName" placeholder="App Name (example: Rock RO System)">
+<input id="shortName" placeholder="Short Name (example: RockRO)">
+<input id="themeColor" placeholder="Theme Color (example: #1a73e8)">
+
+<button onclick="convertPWA()">Convert to PWA App & Download ZIP</button>
+
+<canvas id="canvas" style="display:none"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script>
+async function convertPWA() {
+
+  const html = document.getElementById("htmlCode").value.trim();
+  if(!html){
+    alert("Website HTML code paste பண்ணுங்க!");
+    return;
+  }
+
+  const appName = document.getElementById("appName").value || "My PWA App";
+  const shortName = document.getElementById("shortName").value || "PWA";
+  const themeColor = document.getElementById("themeColor").value || "#1a73e8";
+
+  const zip = new JSZip();
+
+  // ---------- index.html ----------
+  const indexHTML = `
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${appName}</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="${themeColor}">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
 </head>
 <body>
-  <header>
-    <h1>Rock RO System</h1>
-    <p>Pure Water • Safe Life</p>
-  </header>
 
-  <section>
-      
-      
-      <div class="card">
-      <h2>RO Photos</h2>
-      <div class="gallery">
-        <img src="photo1.jpg" alt="RO Photo" />
-        <img src="photo2.jpg" alt="RO Photo" />
-        <img src="photo3.jpg" alt="RO Photo " />
-      </div>
-      
-      
-    </div>
-      
-      
-    <div class="card">
-      <h2>எங்களை பற்றி</h2>
-      <p>Rock RO System – வீடு, கடை, அலுவலகங்களுக்கு உயர்தர RO Water Purifier விற்பனை, நிறுவல் (Installation) மற்றும் சர்வீஸ் செய்யப்படும்.</p>
-    </div>
+${html}
 
-    <div class="card">
-      <h2>எங்கள் சேவைகள்</h2>
-      <ul>
-        <li>RO Water Purifier Sales</li>
-        <li>RO Installation</li>
-        <li>Filter & Membrane Change</li>
-        <li>Annual Maintenance Service (AMC)</li>
-        <li>Water Quality Check</li>
-      </ul>
-    </div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js');
+  });
+}
+</script>
 
-   
+</body>
+</html>
+`;
+  zip.file("index.html", indexHTML);
 
-    <div class="card">
-      <h2>தொடர்பு கொள்ள</h2>
-      <p><strong>மொபைல்:</strong> 8526627925</p>
-      <p><strong>முகவரி:</strong> உங்கள் கடை முகவரி</p>
-      <a class="btn" href="tel:8526627925">Call Now</a>
-    </div>
-  </section>
+  // ---------- manifest.json ----------
+  const manifest = {
+    name: appName,
+    short_name: shortName,
+    start_url: "index.html",
+    display: "standalone",
+    background_color: "#ffffff",
+    theme_color: themeColor,
+    icons: [
+      { src: "icons/icon-128x128.png", sizes: "128x128", type: "image/png" },
+      { src: "icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { src: "icons/icon-256x256.png", sizes: "256x256", type: "image/png" },
+      { src: "icons/icon-512x512.png", sizes: "512x512", type: "image/png" }
+    ]
+  };
+  zip.file("manifest.json", JSON.stringify(manifest, null, 2));
 
-  <footer>
-    <p>© 2025 Rock RO System. All Rights Reserved.</p>
-  </footer>
+  // ---------- service-worker.js ----------
+  const sw = `
+const CACHE_NAME = "pwa-cache-v1";
+const FILES = [
+  "/",
+  "/index.html",
+  "/manifest.json"
+];
+
+self.addEventListener("install", e => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener("fetch", e => {
+  e.respondWith(
+    caches.match(e.request).then(r => r || fetch(e.request))
+  );
+});
+`;
+  zip.file("service-worker.js", sw);
+
+  // ---------- icons ----------
+  const iconsFolder = zip.folder("icons");
+  const sizes = [128,192,256,512];
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  for(let size of sizes){
+    canvas.width = size;
+    canvas.height = size;
+    ctx.fillStyle = themeColor;
+    ctx.fillRect(0,0,size,size);
+    ctx.fillStyle = "white";
+    ctx.font = `${size/5}px Arial`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(shortName[0] || "P", size/2, size/2);
+    const blob = await new Promise(r => canvas.toBlob(r));
+    iconsFolder.file(`icon-${size}x${size}.png`, blob);
+  }
+
+  // ---------- ZIP Download ----------
+  const content = await zip.generateAsync({type:"blob"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(content);
+  a.download = "pwa-app.zip";
+  a.click();
+}
+</script>
+
 </body>
 </html>
