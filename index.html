@@ -1,294 +1,71 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ta">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time Food Detection (TF.js)</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.13.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
-    <style>
-        body {
-            font-family: sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-        #video-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto 20px;
-            border: 2px solid #ccc;
-            background-color: #000;
-        }
-        #webcam {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        canvas {
-            display: none; /* Used for processing, not display */
-        }
-        #status, #prediction-output {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: left;
-        }
-        #prediction-output h3 {
-            margin-top: 0;
-            color: #007bff;
-        }
-        #nutrition-details {
-            margin-top: 10px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #e9ecef;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            text-align: left;
-            display: none;
-        }
-        .nutrition-item {
-            margin-bottom: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .mobile-warning {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rock RO System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background:#f5f7fa; color:#222; }
+    header { background:#0b5ed7; color:#fff; padding:20px; text-align:center; }
+    section { padding:20px; max-width:900px; margin:auto; }
+    .card { background:#fff; padding:16px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,.08); margin-bottom:16px; }
+    h2 { color:#0b5ed7; }
+    footer { background:#222; color:#fff; text-align:center; padding:12px; }
+    .btn { display:inline-block; padding:10px 16px; background:#0b5ed7; color:#fff; border-radius:8px; text-decoration:none; }
+    .gallery { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; }
+    .gallery img { width:100%; border-radius:10px; box-shadow:0 3px 8px rgba(0,0,0,.15); }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>Rock RO System</h1>
+    <p>Pure Water • Safe Life</p>
+  </header>
 
-    <h1>🍎 Real-Time Food Detector</h1>
-    <div id="video-container">
-        <video id="webcam" autoplay playsinline muted></video>
+  <section>
+      
+      
+      <div class="card">
+      <h2>RO Photos</h2>
+      <div class="gallery">
+        <img src="photo1.jpg" alt="RO Photo" />
+        <img src="photo2.jpg" alt="RO Photo" />
+        <img src="photo3.jpg" alt="RO Photo " />
+      </div>
+      
+      
+    </div>
+      
+      
+    <div class="card">
+      <h2>எங்களை பற்றி</h2>
+      <p>Rock RO System – வீடு, கடை, அலுவலகங்களுக்கு உயர்தர RO Water Purifier விற்பனை, நிறுவல் (Installation) மற்றும் சர்வீஸ் செய்யப்படும்.</p>
     </div>
 
-    <button id="startButton">Start Camera & Model</button>
-    <div id="status">Loading model...</div>
-
-    <div id="prediction-output">
-        <h3>Detection Result:</h3>
-        <p>Food Detected: <strong id="food-name">N/A</strong></p>
-        <p>Confidence: <strong id="confidence-score">N/A</strong></p>
+    <div class="card">
+      <h2>எங்கள் சேவைகள்</h2>
+      <ul>
+        <li>RO Water Purifier Sales</li>
+        <li>RO Installation</li>
+        <li>Filter & Membrane Change</li>
+        <li>Annual Maintenance Service (AMC)</li>
+        <li>Water Quality Check</li>
+      </ul>
     </div>
 
-    <div id="nutrition-details">
-        <h3>Nutrition Facts:</h3>
-        <div id="nutrition-output"></div>
+   
+
+    <div class="card">
+      <h2>தொடர்பு கொள்ள</h2>
+      <p><strong>மொபைல்:</strong> 8526627925</p>
+      <p><strong>முகவரி:</strong> உங்கள் கடை முகவரி</p>
+      <a class="btn" href="tel:8526627925">Call Now</a>
     </div>
+  </section>
 
-    <canvas id="canvas" style="display:none;"></canvas>
-
-    <script>
-        const webcam = document.getElementById('webcam');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const startButton = document.getElementById('startButton');
-        const statusDiv = document.getElementById('status');
-        const foodNameElement = document.getElementById('food-name');
-        const confidenceScoreElement = document.getElementById('confidence-score');
-        const nutritionDetailsDiv = document.getElementById('nutrition-details');
-        const nutritionOutputDiv = document.getElementById('nutrition-output');
-
-        let model = null;
-        let animationFrameId = null;
-        let isDetecting = false;
-
-        // Model dimensions (MobileNet default)
-        const MODEL_WIDTH = 224;
-        const MODEL_HEIGHT = 224;
-
-        // --- MOCK NUTRITION DATA (Simplified mapping for demonstration) ---
-        // We map the *names* of common ImageNet objects to nutrition data.
-        const nutrition = {
-            "banana": {cal: 89, protein: 1.1, carbs: 23, fat: 0.3},
-            "apple": {cal: 52, protein: 0.3, carbs: 14, fat: 0.2},
-            "lemon": {cal: 29, protein: 1.1, carbs: 9, fat: 0.3},
-            "orange": {cal: 47, protein: 0.9, carbs: 12, fat: 0.1},
-            "cucumber": {cal: 15, protein: 0.7, carbs: 3.6, fat: 0.1},
-            "bell pepper": {cal: 31, protein: 1, carbs: 6, fat: 0.3},
-            "strawberry": {cal: 33, protein: 0.7, carbs: 7.7, fat: 0.3},
-            "egg": {cal: 155, protein: 13, carbs: 1.1, fat: 11},
-            "pizza": {cal: 266, protein: 11, carbs: 33, fat: 10},
-            "hot dog": {cal: 290, protein: 10, carbs: 26, fat: 17},
-            // Fallback for non-food or unmapped items
-            "default": {cal: 'N/A', protein: 'N/A', carbs: 'N/A', fat: 'N/A'}
-        };
-        // --- END NUTRITION DATA ---
-
-        /**
-         * Loads the MobileNet model.
-         */
-        async function loadModel() {
-            statusDiv.textContent = 'Loading MobileNet model...';
-            try {
-                // This uses the @tensorflow-models/mobilenet library
-                model = await mobilenet.load({
-                    modelUrl: "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_1.0_224/model.json"
-                });
-                statusDiv.textContent = 'Model loaded successfully. Ready to start.';
-                startButton.disabled = false;
-                startButton.textContent = 'Start Detection';
-            } catch (error) {
-                statusDiv.textContent = 'Error loading model: ' + error.message;
-                console.error('Model loading error:', error);
-            }
-        }
-
-        /**
-         * Starts the camera feed using getUserMedia.
-         */
-        async function startCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'environment' // Prefer rear camera on mobile
-                    }
-                });
-                webcam.srcObject = stream;
-                // Wait for the video to load before starting detection
-                await new Promise((resolve) => {
-                    webcam.onloadedmetadata = () => {
-                        resolve();
-                    };
-                });
-                webcam.play();
-                statusDiv.textContent = 'Camera started. Detecting food...';
-                
-                // Set canvas size to match video aspect ratio for processing
-                canvas.width = MODEL_WIDTH;
-                canvas.height = MODEL_HEIGHT;
-
-                isDetecting = true;
-                detectFrame();
-            } catch (error) {
-                statusDiv.innerHTML = 'Error accessing camera. Ensure you are using HTTPS or localhost. <span class="mobile-warning">Error: ' + error.message + '</span>';
-                console.error('Camera access error:', error);
-                startButton.textContent = 'Camera Failed. Try Reloading.';
-            }
-        }
-
-        /**
-         * Main detection loop.
-         */
-        function detectFrame() {
-            if (!isDetecting || !model || webcam.readyState !== 4) {
-                // Not ready or stopped
-                animationFrameId = requestAnimationFrame(detectFrame);
-                return;
-            }
-
-            // 1. Preprocess the video frame
-            const imageTensor = tf.tidy(() => {
-                // Draw the current video frame onto the canvas
-                ctx.drawImage(webcam, 0, 0, MODEL_WIDTH, MODEL_HEIGHT);
-                // Convert the canvas image data to a tensor
-                return tf.browser.fromPixels(canvas)
-                    .resizeNearestNeighbor([MODEL_WIDTH, MODEL_HEIGHT])
-                    .toFloat()
-                    .div(255) // Normalize to [0, 1]
-                    .expandDims(0); // Add batch dimension
-            });
-
-            // 2. Run the detection
-            model.classify(imageTensor).then(predictions => {
-                const topPrediction = predictions[0]; // Get the top-1 prediction
-                
-                if (topPrediction) {
-                    const foodLabel = topPrediction.className.split(',')[0].trim().toLowerCase(); // Use the first part of the label
-                    const confidence = (topPrediction.probability * 100).toFixed(2);
-                    
-                    foodNameElement.textContent = foodLabel;
-                    confidenceScoreElement.textContent = `${confidence}%`;
-
-                    // 3. Display nutrition facts
-                    displayNutrition(foodLabel);
-                } else {
-                    foodNameElement.textContent = 'No strong prediction';
-                    confidenceScoreElement.textContent = 'N/A';
-                    nutritionDetailsDiv.style.display = 'none';
-                }
-
-                tf.dispose(imageTensor); // Clean up tensor memory
-                // 4. Loop for next frame
-                animationFrameId = requestAnimationFrame(detectFrame);
-            });
-        }
-
-        /**
-         * Displays nutrition information for the detected food.
-         */
-        function displayNutrition(foodLabel) {
-            let info = nutrition[foodLabel];
-            if (!info) {
-                // Check for partial match (e.g., MobileNet might output 'Granny Smith apple' or 'red apple')
-                const matchedKey = Object.keys(nutrition).find(key => foodLabel.includes(key));
-                info = nutrition[matchedKey] || nutrition["default"];
-                // If a partial match is found, update the displayed food name to the simpler one
-                if (matchedKey) {
-                    foodNameElement.textContent = matchedKey;
-                }
-            }
-            
-            nutritionOutputDiv.innerHTML = `
-                <div class="nutrition-item">Calories: <strong>${info.cal}</strong> kcal</div>
-                <div class="nutrition-item">Protein: <strong>${info.protein}</strong> g</div>
-                <div class="nutrition-item">Carbs: <strong>${info.carbs}</strong> g</div>
-                <div class="nutrition-item">Fat: <strong>${info.fat}</strong> g</div>
-            `;
-            nutritionDetailsDiv.style.display = 'block';
-        }
-
-        /**
-         * Initializes the process.
-         */
-        function init() {
-            startButton.disabled = true;
-            startButton.textContent = 'Loading...';
-            
-            // Set up the start button handler
-            startButton.addEventListener('click', () => {
-                if (!isDetecting) {
-                    startButton.textContent = 'STOP Detection';
-                    startCamera();
-                } else {
-                    isDetecting = false;
-                    cancelAnimationFrame(animationFrameId);
-                    webcam.srcObject.getTracks().forEach(track => track.stop()); // Stop camera
-                    startButton.textContent = 'Start Detection';
-                    statusDiv.textContent = 'Detection stopped.';
-                    foodNameElement.textContent = 'N/A';
-                    confidenceScoreElement.textContent = 'N/A';
-                    nutritionDetailsDiv.style.display = 'none';
-                }
-            });
-
-            // Start loading the model immediately
-            loadModel();
-        }
-
-        // Run initialization when the document is ready
-        window.onload = init;
-    </script>
-
+  <footer>
+    <p>© 2025 Rock RO System. All Rights Reserved.</p>
+  </footer>
 </body>
 </html>
